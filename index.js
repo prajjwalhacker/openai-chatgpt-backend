@@ -28,11 +28,11 @@ app.post('/', async(req ,res) => {
   try {
       const response = await configuration.chat.completions.create({
         model: 'gpt-3.5-turbo',
-        messages: [{ role: 'user', content: 'hello' }],
+        messages: [{ role: 'user', content: req.body.prompt }],
         max_tokens: 100,
         temperature: 0.7,
       });
-      console.log("Response");
+     
       console.log(response.choices[0].message);
       res.status(200).send({
         bot: response.choices[0].message.content
