@@ -1,7 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const openai = require('openai');
+const OpenAI = require('openai');
 
 const app = express();
 
@@ -14,7 +14,7 @@ app.use(cors({
 app.use(express.json());
 
 
-const configuration = new openai.Configuration(
+const configuration = new OpenAI(
   {
     apiKey: process.env.OPENAPI_API_KEY
   }
@@ -26,17 +26,16 @@ app.get('/', async (req ,res) => {
 
 app.post('/', async(req ,res) => {
   try {
-      const response = await openai.createCompletion({
-        model: 'text-davinci-003',
-        prompt: 'hello',
-        temperature: 0,
-        max_tokens: 1000,
-        top_p: 1,
-        frequency_penalty: 0.5,
-        presense_penalty: 0
-      })
+      const response = await configuration.chat.completions.create({
+        model: 'gpt-3.5-turbo',
+        messages: [{ role: 'user', content: 'hello' }],
+        max_tokens: 100,
+        temperature: 0.7,
+      });
+      console.log("Response");
+      console.log(response.choices[0].message);
       res.status(200).send({
-        bot: response.data.choices[0].text
+        bot: response.choices[0].message.content
       });
   }
   catch (err) {
